@@ -3,7 +3,7 @@
 #include<string.h>
 #include<cs50.h>
 #define S_MAX 100
-#define DEBUG 1 
+#define DEBUG 0
 
 void usage() {
     printf("Usage ./caesar k\n");
@@ -11,7 +11,7 @@ void usage() {
 
 void cipher(int key, char *plaintext) {
     int i;
-    if (DEBUG) printf("\t strlen : %d\n", strlen(plaintext));
+    if (DEBUG) printf("\t strlen : %ld\n", strlen(plaintext));
     for (i = 0; i < strlen(plaintext); i++) {
         if (DEBUG) printf("%c, %d\n", plaintext[i], plaintext[i]);
         

@@ -22,6 +22,7 @@
 // constants
 #define DIM_MIN 3
 #define DIM_MAX 9
+#define MAX 1000000
 
 // board
 int board[DIM_MAX][DIM_MAX];
@@ -82,7 +83,10 @@ int main(int argc, char* argv[])
         {
             for (int j = 0; j < d; j++)
             {
-                fprintf(file, "%i", board[i][j]);
+                if (board[i][j] != MAX) 
+                    fprintf(file, "%i", board[i][j]);
+                else
+                    fprintf(file, "0");
                 if (j < d - 1)
                 {
                     fprintf(file, "|");
@@ -122,7 +126,7 @@ int main(int argc, char* argv[])
         }
 
         // sleep thread for animation's sake
-        usleep(500000);
+        usleep(5000);
     }
     
     // close log
@@ -169,7 +173,7 @@ void init(void)
         board[d-1][d-2] = 2;
         board[d-1][d-3] = 1;
     }
-    board[d-1][d-1] = 0;
+    board[d-1][d-1] = MAX;
 }
 
 /**
@@ -181,7 +185,7 @@ void draw(void)
     int i, j;
     for (i = 0; i < d; i++) {
         for (j = 0; j < d; j++) {
-            if (board[i][j] == 0) printf("_");
+            if (board[i][j] == MAX) printf("_");
             else printf("%d", board[i][j]);
             if (j < (d-1)) printf("\t");
         }
@@ -205,10 +209,10 @@ int move(int tile)
     for (i = 0; i < d; i++) {
         for (j = 0; j < d; j++) {
             if (board[i][j] == tile) {
-                if (board[i][j-1] == 0 && notOverflowed(i, j-1)) {board[i][j-1] = tile; board[i][j] = 0;return 1;}   
-                else if (board[i-1][j] == 0 && notOverflowed(i-1, i)) {board[i-1][j] = tile; board[i][j] = 0;return 1;}   
-                else if (board[i][j+1] == 0 && notOverflowed(i, j+1)) {board[i][j+1] = tile; board[i][j] = 0;return 1;}   
-                else if (board[i+1][j] == 0 && notOverflowed(i+1, j)) {board[i+1][j] = tile; board[i][j] = 0;return 1;}   
+                if (board[i][j-1] == MAX && notOverflowed(i, j-1)) {board[i][j-1] = tile; board[i][j] = MAX;return 1;}   
+                else if (board[i-1][j] == MAX && notOverflowed(i-1, i)) {board[i-1][j] = tile; board[i][j] = MAX;return 1;}   
+                else if (board[i][j+1] == MAX && notOverflowed(i, j+1)) {board[i][j+1] = tile; board[i][j] = MAX;return 1;}   
+                else if (board[i+1][j] == MAX && notOverflowed(i+1, j)) {board[i+1][j] = tile; board[i][j] = MAX;return 1;}   
                 else return 0;
             }
         }
@@ -223,12 +227,17 @@ int move(int tile)
 int won(void)
 {
     // TODO
+    //if (board[d-1][d-1] != 0) return 0;
     int i, j, s, t;
-    for (i = 0; i < d; i++)
-        for (j = 0; j < d; j++)
-            for (s = 0; s < d; s++)
-                for (t = 0; t < d; t++)
-                    if ((board[i][j] == 0 && (i != d-1 && j != d-1) || (board[i][j] < board[s][t] && (i >= s && j > t)) return 0;
-
-    return 1;
+    for (i = 0; i < d; i++) {
+        for (j = 0; j < d; j++) {
+            //if (board[i][j] == 0 && (i < (d-1) && j < (d-1))) return 0; 
+            for (s = i; s < d; s++)
+                for (t = j; t < d; t++)
+                    if (board[i][j] > board[s][t]) return 0;
+        }
+    }
+                   
+    if (board[d-1][d-1] == MAX) return 1;
+    else return 0;
 }
